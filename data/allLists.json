@@ -1,0 +1,20 @@
+[
+  {
+    "locationListName": "Schools",
+    "list": [
+      {
+        "streetName": "123 main st",
+        "comments": [
+          "Has good latte",
+          "Too expensive"
+        ],
+        "province": "BC",
+        "city": "Vancouver",
+        "postalCode": "V5N3H2",
+        "name": "UBC",
+        "rating": 8
+      }
+
+    ]
+  }
+]

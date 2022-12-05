@@ -1,0 +1,23 @@
+[{
+    "locationListName": "schools",
+    "list": [
+        {
+            "streetName": "dnuo",
+            "comments": ["hellooo"],
+            "province": "ioh",
+            "city": "hioh",
+            "postalCode": "hio",
+            "name": "ubc",
+            "rating": 20
+        },
+        {
+            "streetName": "ihohi",
+            "comments": [],
+            "province": "hoi",
+            "city": "iohio",
+            "postalCode": "ohioh",
+            "name": "sfu",
+            "rating": 4
+        }
+    ]
+}]
