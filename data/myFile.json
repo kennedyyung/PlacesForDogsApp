@@ -1,23 +1,12 @@
 [{
-    "locationListName": "schools",
-    "list": [
-        {
-            "streetName": "dnuo",
-            "comments": ["hellooo"],
-            "province": "ioh",
-            "city": "hioh",
-            "postalCode": "hio",
-            "name": "ubc",
-            "rating": 20
-        },
-        {
-            "streetName": "ihohi",
-            "comments": [],
-            "province": "hoi",
-            "city": "iohio",
-            "postalCode": "ohioh",
-            "name": "sfu",
-            "rating": 4
-        }
-    ]
+    "locationListName": "Untitled List",
+    "list": [{
+        "streetName": "123 main st",
+        "comments": ["hellos"],
+        "province": "hioh",
+        "city": "jio",
+        "postalCode": "jiodsa",
+        "name": "ubc",
+        "rating": 5
+    }]
 }]

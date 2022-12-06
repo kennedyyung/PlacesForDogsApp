@@ -2,8 +2,8 @@ package ui;
 
 //import model.AllLists;
 
-import model.Event;
 import model.EventLog;
+import model.Event;
 import model.Location;
 import model.LocationList;
 import persistence.JsonReader;
@@ -27,6 +27,7 @@ public class PlacesForDogsApp extends JFrame {
     private JButton saveLists;
     private JButton viewLocationLists;
     private JButton addALocation;
+    private JButton editLocation;
     private JTextField listName;
     private JTextField nameTextField;
     private JTextField addressTextField;
@@ -110,13 +111,15 @@ public class PlacesForDogsApp extends JFrame {
         viewLocationLists = new JButton("View Location lists");
         saveLists = new JButton("Save Current Lists");
         loadLists = new JButton("Load Lists");
-        addALocation = new JButton("New Location");
+        addALocation = new JButton("Add Location");
+        editLocation = new JButton("Edit a Location");
         buttonColors();
         organizer.add(addLocationList, g);
         organizer.add(viewLocationLists, g);
         organizer.add(saveLists, g);
         organizer.add(loadLists, g);
         organizer.add(addALocation, g);
+        organizer.add(editLocation, g);
         return organizer;
     }
 
@@ -128,6 +131,7 @@ public class PlacesForDogsApp extends JFrame {
         saveLists.setBackground(LIGHT_BLUE);
         loadLists.setBackground(LIGHT_BLUE);
         addALocation.setBackground(LIGHT_BLUE);
+        editLocation.setBackground(LIGHT_BLUE);
         //  setLocationListName.setBackground(LIGHT_BLUE);
     }
 
@@ -140,6 +144,7 @@ public class PlacesForDogsApp extends JFrame {
         loadLists.addActionListener(l -> loadFile());
         // setLocationListName.addActionListener(l -> setLocationListNamePanel());
         addALocation.addActionListener(l -> addALocationPanel());
+        editLocation.addActionListener(l -> editLocationPanel(-1, 0));
     }
 
     //MODIFIES: this
@@ -361,7 +366,9 @@ public class PlacesForDogsApp extends JFrame {
         return province;
     }
 
-
+    //MODIFIES: this
+    //REQUIRES: locationListNumber and locationNumber
+    //EFFECTS:JList displaying the comments for the location
     private JList comments(int locationListNumber, int locationNumber) {
         DefaultListModel commentsModel;
         commentsModel = new DefaultListModel();
@@ -387,6 +394,7 @@ public class PlacesForDogsApp extends JFrame {
         JLabel description = new JLabel("Choose a rating and add a comment for the ");
         JLabel description2 = new JLabel("selected location");
         JPanel descriptions = new JPanel();
+        descriptions.setBackground(LIGHT_BLUE);
         descriptions.setLayout(new BoxLayout(descriptions, BoxLayout.Y_AXIS));
         descriptions.add(description, BorderLayout.NORTH);
         descriptions.add(description2, BorderLayout.SOUTH);
@@ -410,6 +418,7 @@ public class PlacesForDogsApp extends JFrame {
 
     private JPanel ratingPanel(int locationListNumber, int locationNumber) {
         JPanel ratingPanel = new JPanel();
+        ratingPanel.setBackground(LIGHT_BLUE);
         ratingPanel.setLayout(new BoxLayout(ratingPanel, BoxLayout.Y_AXIS));
 
         String[] ratingNumbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
@@ -431,6 +440,7 @@ public class PlacesForDogsApp extends JFrame {
 
     private void setRatingAndComment(int locationListNumber, int locationNumber) {
         JPanel organizer = new JPanel();
+        organizer.setBackground(LIGHT_BLUE);
         Integer ratingValue = Integer.valueOf(ratingBox.getSelectedItem().toString());
         allLists.get(locationListNumber).getLocationList().get(locationNumber).setRating(ratingValue);
         allLists.get(locationListNumber).getLocationList().get(locationNumber).getComments()
@@ -462,6 +472,7 @@ public class PlacesForDogsApp extends JFrame {
     //EFFECTS: Jpanel displaying the textfield to input the comment for the chosen location
     public JPanel commentsPanel(int locationListNumber, int locationNumber) {
         JPanel commentsPanel = new JPanel();
+        commentsPanel.setBackground(LIGHT_BLUE);
         commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
 
         commentsTextField = new JTextField();
@@ -647,6 +658,106 @@ public class PlacesForDogsApp extends JFrame {
         buttonListeners();
 
     }
+
+    private void editLocationPanel(int locationList, int locationNumber) {
+        JPanel organizer = new JPanel();
+        organizer.setBorder(BorderFactory.createTitledBorder("Edit Location: "));
+
+        JLabel intro = new JLabel("Please select the location you want to edit");
+
+        JLabel userInputPanel = new JLabel();
+
+        organizer.add(makeLocationLists(), BorderLayout.WEST);
+        organizer.add(makeListOfLocations(locationList), BorderLayout.CENTER);
+        organizer.add(locationInfoForEdit(locationList, locationNumber), BorderLayout.EAST);
+
+        userInputPanel.setLayout(new BoxLayout(userInputPanel, BoxLayout.Y_AXIS));
+        userInputPanel.add(namePanel());
+        userInputPanel.add(addressPanel());
+        userInputPanel.add(postalCodePanel());
+        userInputPanel.add(cityPanel());
+        userInputPanel.add(provincePanel());
+
+        organizer.add(userInputPanel, BorderLayout.EAST);
+
+        //organizer.add(chooseLocation(), BorderLayout.EAST);
+        //organizer.add(chooseListPanel(), BorderLayout.EAST);
+
+        JButton setLocationInfoButton = new JButton("Set Location");
+        userInputPanel.add(setLocationInfoButton);
+
+        setLocationInfoButton.setBackground(LIGHT_BLUE);
+        locationInfoButtonListener(setLocationInfoButton);
+
+        refreshGui(organizer);
+        buttonListeners();
+    }
+
+    public JPanel locationInfoForEdit(int locationListNumber, int locationNumber) {
+        JPanel organizer = new JPanel();
+        JPanel locationInfo = new JPanel();
+
+        locationInfo.setBackground(Color.WHITE);
+        organizer.setPreferredSize(new Dimension(300, 600));
+        organizer.setBackground(Color.WHITE);
+        organizer.setLayout(new BoxLayout(organizer, BoxLayout.Y_AXIS));
+        JLabel commentsIntro = new JLabel("Location comments: ");
+
+        if (locationListNumber == -1 || locationNumber == -1) {
+            System.out.println("blank");
+        } else {
+
+            //adding the different location information labels into one panel
+            locationInfo.setLayout(new GridLayout(0, 1));
+            locationInfo.add(name(locationListNumber, locationNumber));
+            locationInfo.add(address(locationListNumber, locationNumber));
+            locationInfo.add(postalCode(locationListNumber, locationNumber));
+            locationInfo.add(city(locationListNumber, locationNumber));
+            locationInfo.add(province(locationListNumber, locationNumber));
+            locationInfo.add(rating(locationListNumber, locationNumber));
+            locationInfo.add(commentsIntro);
+            locationInfo.add(comments(locationListNumber, locationNumber));
+
+            organizer.add(locationInfo);
+
+        }
+
+        return organizer;
+    }
+
+//    public void addALocationPanel() {
+//        JPanel organizer = new JPanel();
+//        organizer.setBorder(BorderFactory.createTitledBorder("Add Location: "));
+//
+//        JLabel intro = new JLabel("Please select the list you want to add a location to");
+//
+//        JPanel userInput = new JPanel();
+////        userInput.setLayout(new FlowLayout(FlowLayout.LEFT));
+//        userInput.setLayout(new BoxLayout(userInput, BoxLayout.Y_AXIS));
+//        userInput.add(namePanel());
+//        userInput.add(addressPanel());
+//        userInput.add(postalCodePanel());
+//        userInput.add(cityPanel());
+//        userInput.add(provincePanel());
+//
+//        organizer.add(userInput, BorderLayout.WEST);
+//
+//        organizer.add(chooseLocationList(), BorderLayout.EAST);
+//        //organizer.add(chooseListPanel(), BorderLayout.EAST);
+//
+//        JButton setLocationInfoButton = new JButton("Set Location");
+//        userInput.add(setLocationInfoButton);
+//
+//        setLocationInfoButton.setBackground(LIGHT_BLUE);
+//        locationInfoButtonListener(setLocationInfoButton);
+//
+//        refreshGui(organizer);
+//        buttonListeners();
+//
+//
+//    }
+
+
 
 
     public ArrayList<LocationList> getListOfLists() {

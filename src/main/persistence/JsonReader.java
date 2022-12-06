@@ -5,7 +5,6 @@ import model.Location;
 import model.LocationList;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import model.LocationList;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 //Inspired by JsonSerializationDemo
 //https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
