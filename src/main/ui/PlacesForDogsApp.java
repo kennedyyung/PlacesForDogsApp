@@ -112,14 +112,14 @@ public class PlacesForDogsApp extends JFrame {
         saveLists = new JButton("Save Current Lists");
         loadLists = new JButton("Load Lists");
         addALocation = new JButton("Add Location");
-//        editLocation = new JButton("Edit a Location");
+        editLocation = new JButton("Edit a Location");
         buttonColors();
         organizer.add(addLocationList, g);
         organizer.add(viewLocationLists, g);
         organizer.add(saveLists, g);
         organizer.add(loadLists, g);
         organizer.add(addALocation, g);
-//        organizer.add(editLocation, g);
+        organizer.add(editLocation, g);
         return organizer;
     }
 
@@ -131,7 +131,7 @@ public class PlacesForDogsApp extends JFrame {
         saveLists.setBackground(LIGHT_BLUE);
         loadLists.setBackground(LIGHT_BLUE);
         addALocation.setBackground(LIGHT_BLUE);
-//        editLocation.setBackground(LIGHT_BLUE);
+        editLocation.setBackground(LIGHT_BLUE);
         //  setLocationListName.setBackground(LIGHT_BLUE);
     }
 
@@ -144,7 +144,7 @@ public class PlacesForDogsApp extends JFrame {
         loadLists.addActionListener(l -> loadFile());
         // setLocationListName.addActionListener(l -> setLocationListNamePanel());
         addALocation.addActionListener(l -> addALocationPanel());
-//        editLocation.addActionListener(l -> editLocationPanel(-1, 0));
+        editLocation.addActionListener(l -> editLocationPanel(-1,0));
     }
 
     //MODIFIES: this
@@ -565,7 +565,7 @@ public class PlacesForDogsApp extends JFrame {
     private JPanel namePanel() {
         JPanel name = new JPanel();
         JLabel locationNameLabel = new JLabel("Input the location's name here");
-        nameTextField = new JTextField(40);
+        nameTextField = new JTextField(20);
         name.add(locationNameLabel);
         name.add(nameTextField);
 
@@ -578,7 +578,7 @@ public class PlacesForDogsApp extends JFrame {
     private JPanel addressPanel() {
         JPanel address = new JPanel();
         JLabel addressLabel = new JLabel("Input the location's address here");
-        addressTextField = new JTextField(40);
+        addressTextField = new JTextField(20);
         address.add(addressLabel);
         address.add(addressTextField);
 
@@ -591,7 +591,7 @@ public class PlacesForDogsApp extends JFrame {
     private JPanel postalCodePanel() {
         JPanel postalCode = new JPanel();
         JLabel postalCodeLabel = new JLabel("Input the location's postal code here");
-        postalCodeTextField = new JTextField(40);
+        postalCodeTextField = new JTextField(20);
         postalCode.add(postalCodeLabel);
         postalCode.add(postalCodeTextField);
 
@@ -603,7 +603,7 @@ public class PlacesForDogsApp extends JFrame {
     private JPanel cityPanel() {
         JPanel city = new JPanel();
         JLabel cityLabel = new JLabel("Input the location's city here");
-        cityTextField = new JTextField(40);
+        cityTextField = new JTextField(20);
         city.add(cityLabel);
         city.add(cityTextField);
 
@@ -616,7 +616,7 @@ public class PlacesForDogsApp extends JFrame {
     private JPanel provincePanel() {
         JPanel province = new JPanel();
         JLabel provinceLabel = new JLabel("Input the location's province here");
-        provinceTextField = new JTextField(40);
+        provinceTextField = new JTextField(20);
         province.add(provinceLabel);
         province.add(provinceTextField);
 
@@ -658,6 +658,238 @@ public class PlacesForDogsApp extends JFrame {
         buttonListeners();
 
     }
+
+
+    public void editLocationPanel(int locationList, int locationNumber) {
+        JPanel organizer = new JPanel();
+        organizer.setBorder(BorderFactory.createTitledBorder("Edit a Location: "));
+
+        organizer.setLayout(new BoxLayout(organizer, BoxLayout.X_AXIS));
+        JLabel intro = new JLabel("Please select the location list, then location you want to edit");
+
+        JPanel info = new JPanel();
+        info.add(makeLocationListsForEdit(), BorderLayout.WEST);
+        info.add(makeListOfLocationsForEdit(locationList), BorderLayout.EAST);
+
+        JPanel editing = new JPanel();
+        editing.add(makeLocationInfoForEdit(locationList, locationNumber), BorderLayout.WEST);
+        editing.add(changeLocationInfoPanel(locationList, locationNumber), BorderLayout.EAST);
+
+//        organizer.add(intro, BorderLayout.NORTH);
+        organizer.add(info);
+        organizer.add(editing);
+
+        refreshGui(organizer);
+        buttonListeners();
+    }
+
+
+
+
+    public JList<String> makeLocationListsForEdit() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+        JList<String> list = new JList<>(model);
+        list.setPreferredSize(new Dimension(150, 600));
+
+
+        for (int i = 0; i < allLists.size(); i++) {
+            model.addElement(allLists.get(i).getLocationListName());
+        }
+
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setLayoutOrientation(JList.VERTICAL);
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int selectedItem = list.getSelectedIndex();
+                    System.out.println("click");
+                    editLocationPanel(selectedItem, -1);
+
+                }
+            }
+        };
+        list.addMouseListener(mouseListener);
+
+        return list;
+    }
+
+    public JList<String> makeListOfLocationsForEdit(int locationListNumber) {
+        DefaultListModel<String> model = new DefaultListModel<>();
+        JList<String> list = new JList<>(model);
+        list.setPreferredSize(new Dimension(150, 600));
+
+        if (locationListNumber == -1) {
+            System.out.println("blank");
+        } else {
+            for (int i = 0; i < allLists.get(locationListNumber).getLocationList().size(); i++) {
+                model.addElement(allLists.get(locationListNumber).getLocationList().get(i).getName());
+            }
+        }
+
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setLayoutOrientation(JList.VERTICAL);
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int selectedItem = list.getSelectedIndex();
+                    System.out.println("click");
+
+                    editLocationPanel(locationListNumber, selectedItem);
+
+                }
+            }
+        };
+        list.addMouseListener(mouseListener);
+
+        return list;
+    }
+
+    public JPanel makeLocationInfoForEdit(int locationListNumber, int locationNumber) {
+        JPanel organizer = new JPanel();
+        JPanel locationInfo = new JPanel();
+
+        locationInfo.setBackground(Color.WHITE);
+        organizer.setPreferredSize(new Dimension(200, 300));
+        organizer.setBackground(Color.WHITE);
+        organizer.setLayout(new BoxLayout(organizer, BoxLayout.Y_AXIS));
+        JLabel commentsIntro = new JLabel("Location comments: ");
+
+        if (locationListNumber == -1 || locationNumber == -1) {
+            System.out.println("blank");
+        } else {
+
+            //adding the different location information labels into one panel
+            locationInfo.setLayout(new GridLayout(0, 1));
+            locationInfo.add(name(locationListNumber, locationNumber));
+            locationInfo.add(address(locationListNumber, locationNumber));
+            locationInfo.add(postalCode(locationListNumber, locationNumber));
+            locationInfo.add(city(locationListNumber, locationNumber));
+            locationInfo.add(province(locationListNumber, locationNumber));
+            locationInfo.add(rating(locationListNumber, locationNumber));
+            locationInfo.add(commentsIntro);
+            locationInfo.add(comments(locationListNumber, locationNumber));
+
+            organizer.add(locationInfo);
+
+        }
+
+        return organizer;
+    }
+
+
+//
+    public JPanel changeLocationInfoPanel(int locationListNumber, int locationNumber) {
+
+        JPanel organizer = new JPanel();
+        JLabel intro = new JLabel("Please input the information you want to change in the correct location and" +
+                "press the \" change \" button");
+
+        JPanel userInput = new JPanel();
+        userInput.setLayout(new BoxLayout(userInput, BoxLayout.Y_AXIS));
+        userInput.add(namePanel());
+        userInput.add(addressPanel());
+        userInput.add(postalCodePanel());
+        userInput.add(cityPanel());
+        userInput.add(provincePanel());
+
+        JButton editLocationInfoButton = new JButton("Set Changes");
+        editLocationInfoButton.setBackground(LIGHT_BLUE);
+
+        editLocationInfoButtonListener(editLocationInfoButton, locationListNumber, locationNumber);
+
+        organizer.setLayout(new BoxLayout(organizer, BoxLayout.Y_AXIS));
+
+        organizer.add(userInput);
+        organizer.add(editLocationInfoButton);
+        return organizer;
+
+    }
+
+    private void editLocationInfoButtonListener(JButton editLocationInfoButton, int locationListNumber, int locationNumber) {
+        editLocationInfoButton.addActionListener(l -> changeLocationInfo(locationListNumber, locationNumber));
+    }
+
+    private void changeLocationInfo(int locationListNumber, int locationNumber) {
+        JPanel organizer = new JPanel();
+        String name;
+        String address;
+        String postalCode;
+        String city;
+        String province;
+
+        if (!nameTextField.getText().equals("")) {
+            name = nameTextField.getText();
+        } else {
+            name =  allLists.get(locationListNumber).getLocationList().get(locationNumber).getName();
+        }
+        if (!addressTextField.getText().equals("")) {
+            address = addressTextField.getText();
+        } else {
+            address =  allLists.get(locationListNumber).getLocationList().get(locationNumber).getStreetName();
+        }
+
+        if (!postalCodeTextField.getText().equals("")) {
+            postalCode = postalCodeTextField.getText();
+        } else {
+            postalCode =  allLists.get(locationListNumber).getLocationList().get(locationNumber).getPostalCode();
+        }
+
+        if (!cityTextField.getText().equals("")) {
+            city = cityTextField.getText();
+        } else {
+            city =  allLists.get(locationListNumber).getLocationList().get(locationNumber).getCity();
+        }
+
+        if (!provinceTextField.getText().equals("")) {
+            province = provinceTextField.getText();
+        } else {
+            province =  allLists.get(locationListNumber).getLocationList().get(locationNumber).getProvince();
+        }
+
+
+        allLists.get(locationListNumber).getLocationList().get(locationNumber).setName(name);
+        allLists.get(locationListNumber).getLocationList().get(locationNumber).setStreetName(address);
+        allLists.get(locationListNumber).getLocationList().get(locationNumber).setPostalCode(postalCode);
+        allLists.get(locationListNumber).getLocationList().get(locationNumber).setCity(city);
+        allLists.get(locationListNumber).getLocationList().get(locationNumber).setProvince(province);
+
+
+        String message = "location has been changed";
+        JLabel msg = new JLabel(message);
+
+        organizer.add(msg, BorderLayout.CENTER);
+
+        refreshGui(organizer);
+        buttonListeners();
+    }
+
+//
+//    private void changeLocationInfoButton() {
+//        JPanel organizer = new JPanel();
+//        String name = nameTextField.getText();
+//        String address = addressTextField.getText();
+//        String postalCode = postalCodeTextField.getText();
+//        String city = cityTextField.getText();
+//        String province = provinceTextField.getText();
+//
+//        Location newLocation = new Location(name, address, postalCode, city, province);
+//        allLists.get(listAddPanel.getSelectedIndex()).addLocation(newLocation);
+//
+//
+//        refreshGui(organizer);
+//        buttonListeners();
+//
+//    }
+
+
+
+
+
+
+
+
+
+
 
 
     public ArrayList<LocationList> getListOfLists() {
