@@ -781,8 +781,6 @@ public class PlacesForDogsApp extends JFrame {
     public JPanel changeLocationInfoPanel(int locationListNumber, int locationNumber) {
 
         JPanel organizer = new JPanel();
-        JLabel intro = new JLabel("Please input the information you want to change in the correct location and" +
-                "press the \" change \" button");
 
         JPanel userInput = new JPanel();
         userInput.setLayout(new BoxLayout(userInput, BoxLayout.Y_AXIS));
